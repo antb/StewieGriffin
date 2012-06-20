@@ -135,23 +135,23 @@ class Powder(callbacks.PluginRegexp):
         if(self.consolechannel): irc.queueMsg(ircmsgs.privmsg(self.consolechannel, "SAVE: %s"%saveMsg))
 
     def frontpage(self,irc,msg,args):
-	"""
+		"""
 
-	Returns the front page of saves via notices - abuse will not be tolerated."""
-	data = json.loads(utils.web.getUrl('http://powdertoy.co.uk/Browse.json'))['Saves']
+		Returns the front page of saves via notices - abuse will not be tolerated."""
+		data = json.loads(utils.web.getUrl('http://powdertoy.co.uk/Browse.json'))['Saves']
 
-	outMsg = ''
-	x=0
-	for each in data:
-		outMsg='{0}\x02Save:\x02 {1:<24} - \x02By:\x02 {2:<14} - \x02ID: \x02{3:<6} - \x02Votes:\x02 {4:<4}'.format(outMsg,each['Name'].replace('&#039;','\''),each['Username'],str(each['ID']),str(each['Score']))
-		x+=1
-		if x%2 is 0:
-			irc.queueMsg(ircmsgs.privmsg(msg.nick,outMsg))
-			outMsg=''
-                        continue
-                outMsg='{0} -- '.format(outMsg)
+		outMsg = ''
+		x=0
+		for each in data:
+			outMsg='{0}\x02Save:\x02 {1:<24} - \x02By:\x02 {2:<14} - \x02ID: \x02{3:<6} - \x02Votes:\x02 {4:<4}'.format(outMsg,each['Name'].replace('&#039;','\''),each['Username'],str(each['ID']),str(each['Score']))
+			x+=1
+			if x%2 is 0:
+				irc.queueMsg(ircmsgs.privmsg(msg.nick,outMsg))
+				outMsg=''
+							continue
+					outMsg='{0} -- '.format(outMsg)
 
-#	irc.queueMsg(ircmsgs.privmsg(msg.nick,outMsg))
+	#	irc.queueMsg(ircmsgs.privmsg(msg.nick,outMsg))
     frontpage = wrap(frontpage)
 
     def forumSnarfer(self,irc,msg,match):

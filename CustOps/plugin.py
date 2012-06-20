@@ -21,7 +21,7 @@ class CustOps(callbacks.Plugin):
 
 	random.seed()
 	for each in range(0,random.randint(50,100)): i = random.random()
-        del i
+		del i
 
 	def ninja(self,irc,msg,args,channel,user,reason):
 		"""<user> [reason]
@@ -43,10 +43,9 @@ class CustOps(callbacks.Plugin):
 		irc.queueMsg(ircmsgs.invite(user,'#powder-social'))
 		irc.queueMsg(ircmsgs.IrcMsg('NOTICE {} :{} has requested you take your current conversation to #powder-social.'.format(user,msg.nick)))
 		expires = time.time()+300
-                def f():
-                        irc.queueMsg(ircmsgs.IrcMsg('MODE #powder -b {}$#powder-social'.format(irc.state.nickToHostmask(user))))
-
-                schedule.addEvent(f,expires)
+			def f():
+				irc.queueMsg(ircmsgs.IrcMsg('MODE #powder -b {}$#powder-social'.format(irc.state.nickToHostmask(user))))
+			schedule.addEvent(f,expires)
 
 #		irc.queueMsg(ircmsgs.IrcMsg('MODE #powder -b {}$#powder-social'.format(irc.state.nickToHostmask(user))))
 	social = wrap(social,['op',('haveOp','Evict a user to #powder-social'),'nickInChannel',optional('anything')])
@@ -59,27 +58,24 @@ class CustOps(callbacks.Plugin):
 		irc.queueMsg(ircmsgs.IrcMsg('MODE {0} +q {1}'.format(channel,user)))
 
 		t = time.time()
-                r = timer
+		r = timer
 		if not r > 0:
 			r = random.randint(30,600)
 		expires = t+r
 
 		len={}
-		len['m'] = 0
-		len['s'] = 0
+		len['m'] = len['s'] = 0
+
 		while r > 59:
 			len['m']+=1
 			r-=60
+
 		len['s'] = r	
 
 		irc.queueMsg(ircmsgs.IrcMsg('NOTICE {0} :{1} has been quieted for {2}:{3:0>2}'.format(msg.nick,user,len['m'],len['s'])))
-
 		def f():
 			irc.queueMsg(ircmsgs.IrcMsg('MODE {0} -q {1}'.format(channel,user)))
-
 		schedule.addEvent(f,expires)
-
-		 
 		irc.noReply()
 	stab = wrap(stab,['op',('haveOp','Quiet a user'),'nickInChannel',optional('int')])
 
@@ -136,20 +132,20 @@ class CustOps(callbacks.Plugin):
 		except: irc.error('{0} hasn\'t provided an infoline for {1} or isn\'t an op'.format(op,user))
 	info = wrap(info,[optional('nick'),optional('nick')])
 
-        def selfInfo(self,irc,msg,args,line):
-            """<string>
+	def selfInfo(self,irc,msg,args,line):
+		"""<string>
 
-            Lets you set your own info line"""
-            try: i = self.infoLines[msg.nick.lower()]
-	    except: self._getInfo()
+		Lets you set your own info line"""
+		try: i = self.infoLines[msg.nick.lower()]
+	except: self._getInfo()
 
-            try:	self.infoLines[msg.nick.lower()]
-            except:	self.infoLines[msg.nick.lower()]={}
-            
-            self.infoLines[msg.nick.lower()][msg.nick.lower()]=line
-            with open('INFOLINES','w') as f:
-                            f.write(json.dumps(self.infoLines,sort_keys=True,indent=4))
-            irc.replySucess('Personal info line added')
+		try:	self.infoLines[msg.nick.lower()]
+		except:	self.infoLines[msg.nick.lower()]={}
+		
+		self.infoLines[msg.nick.lower()][msg.nick.lower()]=line
+		with open('INFOLINES','w') as f:
+			f.write(json.dumps(self.infoLines,sort_keys=True,indent=4))
+		irc.replySucess('Personal info line added')
 	selfinfo = wrap(selfInfo,['text'])
 Class = CustOps
 
