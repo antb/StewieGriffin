@@ -436,12 +436,12 @@ class General(callbacks.PluginRegexp):
 		newData = []
 		x=0
 		while x < len(data):
-		if '\\' in data[x]:
-			newData+=['{0}/{1}'.format(data[x][:-1],data[x+1])]
-			x+=2
-		else:
-			newData+=[data[x]]
-			x+=1
+			if '\\' in data[x]:
+				newData+=['{0}/{1}'.format(data[x][:-1],data[x+1])]
+				x+=2
+			else:
+				newData+=[data[x]]
+				x+=1
 
 		data=newData
 
@@ -471,14 +471,14 @@ class General(callbacks.PluginRegexp):
 		r".+"
 		channel = msg.args[0]
 
-	try: self.buffer[channel]
+		try: self.buffer[channel]
 		except: self.buffer[channel]=[]
 
 # Stuff for multikick
 		for each in self.kickuser:
-		if each in msg.nick.lower() and not self.kickuser[each]['num'] <= 0:
-			irc.queueMsg(ircmsgs.kick(msg.args[0], msg.nick, "{}".format(self.kickuser[each]['msg'].replace('#n',str(self.kickuser[each]['num'])))))
-			self.kickuser[each]['num']-=1
+			if each in msg.nick.lower() and not self.kickuser[each]['num'] <= 0:
+				irc.queueMsg(ircmsgs.kick(msg.args[0], msg.nick, "{}".format(self.kickuser[each]['msg'].replace('#n',str(self.kickuser[each]['num'])))))
+				self.kickuser[each]['num']-=1
 # END
 		line = match.group(0).replace('\x01ACTION','*').strip('\x01')
 
