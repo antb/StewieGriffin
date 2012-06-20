@@ -399,12 +399,12 @@ class General(callbacks.PluginRegexp):
 		newData = []
 		x=0
 		while x < len(data):
-		if '\\' in data[x]:
-			newData+=['{0}/{1}'.format(data[x][:-1],data[x+1])]
-			x+=2
-		else:
-			newData+=[data[x]]
-			x+=1
+			if '\\' in data[x]:
+				newData+=['{0}/{1}'.format(data[x][:-1],data[x+1])]
+				x+=2
+			else:
+				newData+=[data[x]]
+				x+=1
 
 		data=newData
 
