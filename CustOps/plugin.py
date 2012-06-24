@@ -21,7 +21,7 @@ class CustOps(callbacks.Plugin):
 
 	random.seed()
 	for each in range(0,random.randint(50,100)): i = random.random()
-		del i
+	del i
 
 	def ninja(self,irc,msg,args,channel,user,reason):
 		"""<user> [reason]
@@ -43,9 +43,9 @@ class CustOps(callbacks.Plugin):
 		irc.queueMsg(ircmsgs.invite(user,'#powder-social'))
 		irc.queueMsg(ircmsgs.IrcMsg('NOTICE {} :{} has requested you take your current conversation to #powder-social.'.format(user,msg.nick)))
 		expires = time.time()+300
-			def f():
-				irc.queueMsg(ircmsgs.IrcMsg('MODE #powder -b {}$#powder-social'.format(irc.state.nickToHostmask(user))))
-			schedule.addEvent(f,expires)
+		def f():
+			irc.queueMsg(ircmsgs.IrcMsg('MODE #powder -b {}$#powder-social'.format(irc.state.nickToHostmask(user))))
+		schedule.addEvent(f,expires)
 
 #		irc.queueMsg(ircmsgs.IrcMsg('MODE #powder -b {}$#powder-social'.format(irc.state.nickToHostmask(user))))
 	social = wrap(social,['op',('haveOp','Evict a user to #powder-social'),'nickInChannel',optional('anything')])
@@ -137,7 +137,7 @@ class CustOps(callbacks.Plugin):
 
 		Lets you set your own info line"""
 		try: i = self.infoLines[msg.nick.lower()]
-	except: self._getInfo()
+		except: self._getInfo()
 
 		try:	self.infoLines[msg.nick.lower()]
 		except:	self.infoLines[msg.nick.lower()]={}

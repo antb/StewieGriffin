@@ -148,8 +148,8 @@ class Powder(callbacks.PluginRegexp):
 			if x%2 is 0:
 				irc.queueMsg(ircmsgs.privmsg(msg.nick,outMsg))
 				outMsg=''
-							continue
-					outMsg='{0} -- '.format(outMsg)
+				continue
+			outMsg='{0} -- '.format(outMsg)
 
 	#	irc.queueMsg(ircmsgs.privmsg(msg.nick,outMsg))
     frontpage = wrap(frontpage)

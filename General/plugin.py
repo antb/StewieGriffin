@@ -188,9 +188,17 @@ class General(callbacks.PluginRegexp):
 	#	irc.queueMsg(ircmsgs.privmsg('[NotHere]','User {0} has reported {1} for {2}. Log file is {3} and log time will be around {4}{5}'.format(msg.nick,user,reason,logFile,h,t[4])))
 	#	irc.queueMsg(ircmsgs.privmsg('Xenocide','User {0} has reported {1} for {2}. Log file is {3} and log time will be around {4}{5}'.format(msg.nick,user,reason,logFile,h,t[4])))
 		irc.queueMsg(ircmsgs.privmsg('Memoserv','SEND Xenocide User {0} has reported {1} in {6} for {2}. Log file is {3} and log time will be around {4}{5}'.format(msg.nick,user,reason,logFile,h,t[4],msg.args[0])))
-		irc.reply('Report sent.')
+		irc.replySuccess('Report sent.')
 	report = wrap(report,['nick','text'])
 
+	def bug(self,irc,msg,args,cmd):
+		"""<plugin>
+
+		Use this command when Stewie has a bug. It places a note in the logs and sends Xenocide a message."""
+		self.log.error("****Error in {} reported by {}****".format(cmd,msg.nick))
+		irc.queueMsg(ircmsgs.privmsg('Memoserv','SEND Xenocide Bug found in {} by {}.'.format(cmd,msg.nick)))
+		irc.replySuccess("Bug reported.")
+	bug = wrap(bug,['something'])
 
 	def kicked(self,irc,args,channel,nick):
 		"""[user]
@@ -477,15 +485,19 @@ class General(callbacks.PluginRegexp):
 # Stuff for multikick
 		for each in self.kickuser:
 			if each in msg.nick.lower() and not self.kickuser[each]['num'] <= 0:
+				irc.queueMsg(ircmsgs.ban(msg.args[0], msg.nick))
 				irc.queueMsg(ircmsgs.kick(msg.args[0], msg.nick, "{}".format(self.kickuser[each]['msg'].replace('#n',str(self.kickuser[each]['num'])))))
 				self.kickuser[each]['num']-=1
+				def un():
+					irc.queueMsg(ircmsgs.unban(msg.args[0],msg.nick))
+				schedule.addEvent(un,time.time()+random.randint(30,120))
 # END
 		line = match.group(0).replace('\x01ACTION','*').strip('\x01')
 
 		if msg.nick.lower() in self.annoyUser:
 			def fu():
-				irc.queueMsg(ircmsgs.IrcMsg('PRIVMSG {} :\x02\x03{},{}{}'.format(msg.nick,random.randint(0,15),random.randint(0,15),line)))
-			schedule.addEvent(fu,time.time()+random.randint(1,10))
+				irc.queueMsg(ircmsgs.IrcMsg('NOTICE {} :\x02\x03{},{}{}'.format(msg.nick,random.randint(0,15),random.randint(0,15),line)))
+			schedule.addEvent(fu,time.time()+random.randint(2,60))
 
 		self.buffer[channel].insert(0,[msg.nick,line])
 		if len(self.buffer[channel]) > self.buffsize: self.buffer[channel].pop(self.buffsize)
