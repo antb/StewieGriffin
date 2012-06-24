@@ -44,9 +44,9 @@ class Powder(callbacks.PluginRegexp):
 	consolechannel = "##sgoutput"
 	
 	def git(self, irc, msg, args, user, project, branch):
-		"""<username> [project] [branch]
+		"""<username> [project]
 
-		Returns information about a user GitHub Repo. Project and Branch arguments are optional. Defaults to the-powder-toy/master if no other arguments are given."""
+		Returns information about a user GitHub Repo. Project argument is optional. Defaults to the-powder-toy if no other arguments are given. There is currently no branch option."""
 
 		if(not(branch)):
 			branch="master";
@@ -59,27 +59,27 @@ class Powder(callbacks.PluginRegexp):
 		if user=="doxin":
 			user="dikzak"
 
-		giturl = "http://github.com/api/v2/json/commits/show/%s/%s/%s"%(user,project,branch)
+		giturl = "https://api.github.com/repos/{}/{}/commits".format(user,project)#,branch)
 		try:
 			data = json.loads(utils.web.getUrl(giturl))
 		except:
 			try:
 				branch = project
 				project = "the-powder-toy"
-				giturl = "http://github.com/api/v2/json/commits/show/%s/%s/%s"%(user,project,branch)
+				giturl = "https://api.github.com/repos/{}/{}/commits".format(user,project)#,branch)
 				data = json.loads(utils.web.getUrl(giturl))
 			except:
 				irc.error("HTTP 404. Please check and try again.", prefixNick=False)
 				if(self.consolechannel): irc.queueMsg(ircmsgs.privmsg(self.consolechannel, "GIT: Returned 404 on %s:%s"%(user,branch)))
 				return
-		data = data["commit"]
+		data = data[0]['commit']
 
-		data["committed_date"] = data["committed_date"].split("T")
+		data["committer"]["date"] = data["committer"]["date"].split("T")
 		data["message"] = data["message"].replace("\n"," ") 
 		data["message"] = data["message"].replace("	"," ")
 
 		if(self.consolechannel): irc.queueMsg(ircmsgs.privmsg(self.consolechannel, "GIT: user:%s project:%s branch:%s called by %s sucessfully."%(user,project,branch,msg.nick)))
-		irc.reply("Last commit to %s's %s repo, %s branch, was by %s on %s at %s. Commit message was \"%s\" - https://github.com/%s/%s/tree/%s"%(user,project,branch,data["committer"]["name"],data["committed_date"][0],data["committed_date"][1],data["message"],user,project,branch), prefixNick=False)
+		irc.reply("Last commit to %s's %s repo, %s branch, was by %s on %s at %s. Commit message was \"%s\" - https://github.com/%s/%s/tree/%s"%(user,project,branch,data["committer"]["name"],data["committer"]["date"][0],data["committer"]["date"][1],data["message"],user,project,branch), prefixNick=False)
 
 
 	git = wrap(git,['somethingWithoutSpaces',optional('somethingWithoutSpaces'),optional('somethingwithoutspaces')])
@@ -121,7 +121,7 @@ class Powder(callbacks.PluginRegexp):
 		if ID[0]=="h" or ID[0]=="p":
 			ID = (ID.split("="))[1]
 		elif ID[0]=="~":
-		ID=ID[1:]
+			ID=ID[1:]
 			urlGiven=False
 
 		data = json.loads(utils.web.getUrl("http://powdertoy.co.uk/Browse/View.json?ID="+ID))
