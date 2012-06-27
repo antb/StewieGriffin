@@ -51,11 +51,11 @@ class Powder(callbacks.PluginRegexp):
 		if(not(branch)):
 			branch="master";
 		if(not(project)):
-			project="the-powder-toy"
+			project="The-Powder-Toy"
 		user=user.lower()
 		branch=branch.lower()
 		if(user=="simon" or user=="isimon" or user=="ximon"):
-			user="facialturd"
+			user="FacialTurd"
 		if user=="doxin":
 			user="dikzak"
 

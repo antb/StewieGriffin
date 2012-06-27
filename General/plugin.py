@@ -292,7 +292,7 @@ class General(callbacks.PluginRegexp):
 	greeter = urlSnarfer(greeter)
 
 	def awayMsgKicker(self, irc, msg, match):
-		r"(is now (set as)? away [-:] Reason |is no longer away : Gone for|is away:)"
+		r"(is now (set as)? away [-:(] Reason |is no longer away : Gone for|is away:)"
 		self.log.info("KICKING %s for away announce"%msg.nick)
 		if(self.consolechannel):irc.queueMsg(ircmsgs.privmsg(self.consolechannel, "KICK: %s for away announcement (automatic)"%msg.nick))
 		self._sendMsg(irc, ircmsgs.kick(msg.args[0], msg.nick, "Autokick: Spam (Away/Back Announce)"))
