@@ -55,7 +55,7 @@ class CustOps(callbacks.Plugin):
 
 		Stabs a user, putting them on quiet for a random time up to 10 mins."""
 
-		irc.queueMsg(ircmsgs.IrcMsg('MODE {0} +q {1}'.format(channel,user)))
+		irc.queueMsg(ircmsgs.IrcMsg('MODE {0} +q {1}'.format(channel,irc.state.nickToHostmask(user))))
 
 		t = time.time()
 		r = timer
@@ -79,6 +79,13 @@ class CustOps(callbacks.Plugin):
 		irc.noReply()
 	stab = wrap(stab,['op',('haveOp','Quiet a user'),'nickInChannel',optional('int')])
 
+    def unstab(self,irc,msg,args,channel,user):
+        """<user>
+        
+        Removes +q from a user in channel"""
+        irc.queueMsg(ircmsgs.IrcMsg('MODE {} -q {}'.format(channel,irc.state.nickToHostmask(user))))
+    unstab = wrap(unstab,['op',('haveOp','Set user modes'), 'nickInChannel'])
+    
 	def setinfo(self,irc,msg,args,channel,user,infoline):
 		"""\x02<user> <infoline>\x02
 

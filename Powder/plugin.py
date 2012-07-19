@@ -46,7 +46,7 @@ class Powder(callbacks.PluginRegexp):
 	def git(self, irc, msg, args, user, project, branch):
 		"""<username> [project]
 
-		Returns information about a user GitHub Repo. Project argument is optional. Defaults to the-powder-toy if no other arguments are given. There is currently no branch option."""
+		Returns information about a user GitHub Repo. Project argument is optional. Defaults to the-powder-toy if no other arguments are given. There is currently no branch option. Arguments are CaSe-SeNsItIvE"""
 
 		if(not(branch)):
 			branch="master";
@@ -130,7 +130,7 @@ class Powder(callbacks.PluginRegexp):
 		else:
 			saveMsg = "Save "+ID+" is "+data["Name"].replace('&#039;','\'').replace('&gt;','>')+" by "+data["Username"]+". Score: "+str(data["Score"])+"."
 			if(not urlGiven):
-				saveMsg+=" http://powdertoy.co.uk/Browse/View.html?ID="+ID
+				saveMsg+=" http://powdertoy.co.uk/~"+ID
 		irc.reply(saveMsg,prefixNick=False)
 		if(self.consolechannel): irc.queueMsg(ircmsgs.privmsg(self.consolechannel, "SAVE: %s"%saveMsg))
 
@@ -179,7 +179,7 @@ class Powder(callbacks.PluginRegexp):
 			userID = userPage.split("<a href=\"/User.html?ID=")[1].split("\"")[0];
 			userData = json.loads(utils.web.getUrl("http://powdertoy.co.uk/User.json?Name="+user))
 			uDu = userData['User']
-			irc.reply('http://powdertoy.co.uk/User.html?Name={0} | {0} (ID {1}) | Has {2} saves - Average score {3} - Highest score {4} | Posted {5} topics -  {6} posts - Has {7} reputation.'.format(user,userID,uDu['Saves']['Count'],uDu['Saves']['AverageScore'],uDu['Saves']['HighestScore'],uDu['Forum']['Topics'],uDu['Forum']['Replies'],uDu['Forum']['Reputation']), prefixNick=False)
+			irc.reply('http://powdertoy.co.uk/@{0} | ID {1} | Has {2} saves - Average score {3} - Highest score {4} | Posted {5} topics -  {6} posts - Has {7} reputation.'.format(user,userID,uDu['Saves']['Count'],uDu['Saves']['AverageScore'],uDu['Saves']['HighestScore'],uDu['Forum']['Topics'],uDu['Forum']['Replies'],uDu['Forum']['Reputation']), prefixNick=False)
 
 		except Exception, e:
 			try:
@@ -187,7 +187,7 @@ class Powder(callbacks.PluginRegexp):
 				userName = userPage.split("<h1 class=\"SubmenuTitle\">")[1].split("</h1>")[0]
 				userData = json.loads(utils.web.getUrl("http://powdertoy.co.uk/User.json?ID="+user))
 				uDu = userData['User']
-				irc.reply('http://powdertoy.co.uk/User.html?ID={0} | {1} (ID {0}) | Has {2} saves - Average score {3} - Highest score {4} | Posted {5} topics -  {6} posts - Has {7} reputation.'.format(user,userName,uDu['Saves']['Count'],uDu['Saves']['AverageScore'],uDu['Saves']['HighestScore'],uDu['Forum']['Topics'],uDu['Forum']['Replies'],uDu['Forum']['Reputation']), prefixNick=False)
+				irc.reply('http://powdertoy.co.uk/@{1} | ID {0} | Has {2} saves - Average score {3} - Highest score {4} | Posted {5} topics -  {6} posts - Has {7} reputation.'.format(user,userName,uDu['Saves']['Count'],uDu['Saves']['AverageScore'],uDu['Saves']['HighestScore'],uDu['Forum']['Topics'],uDu['Forum']['Replies'],uDu['Forum']['Reputation']), prefixNick=False)
 
 			except Exception, e:
 				irc.reply("User or ID doesn't exist - or Xeno screwed it again... {}".format(e))
